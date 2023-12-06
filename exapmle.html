@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plastic Waste Reduction Calculator</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+       
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+h1 {
+  color: #333;
+}
+
+label {
+  font-size: 1.2em;
+  margin-right: 10px;
+  color: #333;
+}
+
+input {
+  padding: 8px;
+  font-size: 1em;
+}
+
+button {
+  padding: 8px 16px;
+  font-size: 1em;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+#chartContainer {
+  width: 400px;
+  height: 400px;
+  margin-top: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+ 
+    </style>
+</head>
+<body>
+    <h1>Plastic Waste Reduction Calculator</h1>
+
+    <label for="dailyUsage">Daily Plastic Usage (in grams): </label>
+    <input type="number" id="dailyUsage" placeholder="Enter daily plastic usage" />
+    <button onclick="calculateReduction()">Calculate</button>
+
+    <div id="chartContainer">
+        <canvas id="myChart" width="400" height="400"></canvas>
+    </div>
+
+    <script>
+        function calculateReduction() {
+            // Get user input
+            const dailyUsage = parseFloat(document.getElementById('dailyUsage').value);
+
+            // Assuming 365 days in a year for simplicity
+            const yearlyUsage = dailyUsage * 365;
+
+            // Environmental impact calculations (you can customize these values)
+            const plasticReductionPercentage = 0.2; // 20% reduction
+            const carbonEmissionReduction = yearlyUsage * 0.01; // Arbitrary value for carbon emission reduction
+
+            // Convert carbon emission reduction to 1 tonne (1000 kilograms)
+            const carbonEmissionReductionInTonne = carbonEmissionReduction / 1000;
+
+            // Additional information about plastic decomposition (in years)
+            const plasticDecompositionTime = 450; // Example: plastic bottle takes about 450 years to decompose
+
+            // Area covered by plastic waste (example value)
+            const areaCoveredByPlastic = 200; // in square meters
+
+            // Pollution estimate (example value)
+            const pollutionGenerated = areaCoveredByPlastic * 0.05; // Convert arbitrary pollution estimate from grams to kilograms
+
+            // Calculate new values after reduction
+            const reducedYearlyUsage = yearlyUsage * (1 - plasticReductionPercentage);
+
+            // Convert values to metric units
+            const mtReducedYearlyUsage = reducedYearlyUsage / 1000; // 1 kilogram = 0.001 metric tons
+
+            // Update the chart
+            updateChart(mtReducedYearlyUsage, carbonEmissionReductionInTonne, plasticDecompositionTime, areaCoveredByPlastic, pollutionGenerated);
+        }
+
+        function updateChart(mtReducedYearlyUsage, carbonEmissionReductionInTonne, plasticDecompositionTime, areaCoveredByPlastic, pollutionGenerated) {
+            var ctx = document.getElementById('myChart').getContext('2d');
+            var myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Plastic Waste Reduction (Metric Tons)', 'Carbon Emission Reduction (Tonnes)', 'Plastic Decomposition Time (Years)', 'Area Covered by Plastic (Square Meters)', 'Pollution Generated (Kilograms)'],
+                    datasets: [{
+                        label: 'Environmental Impact',
+                        data: [mtReducedYearlyUsage, carbonEmissionReductionInTonne, plasticDecompositionTime, areaCoveredByPlastic, pollutionGenerated],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.6)',
+                            'rgba(54, 162, 235, 0.6)',
+                            'rgba(255, 206, 86, 0.6)',
+                            'rgba(75, 192, 192, 0.6)',
+                            'rgba(153, 102, 255, 0.6)',
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            callback: function(value) {
+                                if (value % 1 === 0) {
+                                    return value; // Display integer values without decimals
+                                } else {
+                                    return value.toFixed(2); // Display other values with two decimals
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
